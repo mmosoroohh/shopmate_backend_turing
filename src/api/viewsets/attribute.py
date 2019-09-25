@@ -22,7 +22,11 @@ class AttributeViewSet(viewsets.ReadOnlyModelViewSet):
         """
         Get Values Attribute from Attribute ID
         """
-        # TODO: place the code here
+        attribute = self.queryset.get(int=kwargs["int"])
+        serializer = AttributeValueSerializer()
+        import pdb;pdb.set_trace()
+        return Response(AttributeValueSerializer(attribute).data)
+
 
     @action(detail=False, url_path='inProduct/<int:product_id>')
     def get_attributes_from_product(self, request, *args, **kwargs):
