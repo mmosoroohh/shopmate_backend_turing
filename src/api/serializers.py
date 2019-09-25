@@ -4,6 +4,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from api.models import Department, Category, Attribute, AttributeValue, Product, Customer, Shipping, Tax, ShoppingCart, \
     Orders, OrderDetail, ShippingRegion, Review
+from api.helpers.serializer_fields import SerializeField, SerializeManyToManyField
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -48,7 +49,9 @@ class AttributeValueExtendedSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ('product_id', 'name', 'description', 'price', 'discounted_price', 'thumbnail')
+        fields = (
+            'product_id', 'name', 'description', 'price', 'discounted_price', 'thumbnail', 'image', 'image_2', 'display'
+        )
 
 
 class CustomerSerializer(serializers.ModelSerializer):
@@ -94,9 +97,11 @@ class TaxSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    name = serializers.CharField()
+
     class Meta:
         model = Review
-        fields = ('product_id', 'review', 'customer_id', 'rating')
+        fields = ('product_id', 'name', 'review', 'rating', 'created_on')
 
 
 class ShippingSerializer(serializers.ModelSerializer):

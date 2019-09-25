@@ -48,6 +48,13 @@ def update_customer(request):
     """
     logger.debug("Updating customer")
     # TODO: place the code here
+    serializer_data = request.data
+    serializer = CustomerSerializer(
+        request.user, data=serializer_data, partial=True
+    )
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @swagger_auto_schema(method="POST", request_body=CreateCustomerSerializer)
@@ -57,7 +64,15 @@ def create_customer(request):
     Register a customer.
     """
     logger.debug("Creating a customer")
-    # TODO: place the code here
+    customer = Customer.objects.create()
+    serializer = CreateCustomerSerializer(customer, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        data = {
+            'customer': serializer.data
+        }
+        return Response(data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TokenObtainPairPatchedView(TokenObtainPairView):
@@ -156,6 +171,15 @@ def update_address(request):
     Update the address from customer
     """
     # TODO: place the code here
+    if AnonymousUser:
+        return Response({'message': "Please login to complete this action"})
+    serializer_data = request.data
+    serializer = CustomerAddressSerializer(
+        request.user, data=serializer_data,
+        partial=True, context={'request': request})
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response({serializer.data})
 
 
 def count_consecutive(num):
