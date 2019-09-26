@@ -99,6 +99,5 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
         # TODO: place the code here
         data = request.data
         context = {'request': request}
-        import pdb;pdb.set_trace()
         queryset = Product.objects.all()
         context['product_id'] = Product.object.get(pk=pk)

@@ -48,4 +48,9 @@ urlpatterns = [
     path('customers/address', update_address),
     path('customers/creditCard', update_credit_card),
 
+    path('orders', create_order, name="Create an order"),
+    path('orders/<int:order_id>', order, name="Get single order"),
+    path('orders/inCustomer', orders, name="All orders"),
+    path('orders/shortDetail/<int:order_id>', order_details, name="Get Order Details"),
+
 ]

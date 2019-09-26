@@ -98,10 +98,10 @@ class OrderDetail(models.Model):
 
 class Orders(models.Model):
     order_id = models.AutoField(primary_key=True)
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    created_on = models.DateTimeField()
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    created_on = models.DateTimeField(auto_now=True)
     shipped_on = models.DateTimeField(blank=True, null=True)
-    status = models.IntegerField()
+    status = models.IntegerField(default=0)
     comments = models.CharField(max_length=255, blank=True, null=True)
     customer_id = models.IntegerField(blank=True, null=True)
     auth_code = models.CharField(max_length=50, blank=True, null=True)

@@ -48,6 +48,8 @@ def update_customer(request):
     """
     logger.debug("Updating customer")
     # TODO: place the code here
+    if AnonymousUser:
+        return Response({'message': "Please login to complete this action"})
     serializer_data = request.data
     serializer = CustomerSerializer(
         request.user, data=serializer_data, partial=True
@@ -144,7 +146,6 @@ class SocialLoginView(generics.GenericAPIView):
             # generate JWT token
             login(request, authenticated_user)
             refresh = RefreshToken.for_user(user)
-
             try:
                 customer = Customer.objects.get(name=user.first_name + ' ' + user.last_name)
             except Customer.DoesNotExist:
@@ -171,6 +172,8 @@ def update_address(request):
     Update the address from customer
     """
     # TODO: place the code here
+    if AnonymousUser:
+        return Response({'message': "Please login to complete this action"})
     serializer_data = request.data
     serializer = CustomerAddressSerializer(
         request.user, data=serializer_data,
