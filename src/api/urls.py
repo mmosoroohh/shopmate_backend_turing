@@ -4,7 +4,7 @@ from django.urls import path, include
 from rest_framework import routers
 
 from api.viewsets.attribute import AttributeViewSet
-#from api.viewsets.category import CategoryViewSet 
+from api.viewsets.category import CategoryViewSet
 # TODO: Implement category
 from api.viewsets.customers import create_customer, token_obtain_pair, SocialLoginView, update_address, \
     update_credit_card, customer, update_customer
@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 router = routers.DefaultRouter()
 router.register(r'departments', DepartmentViewSet)
+router.register(r'categories', CategoryViewSet)
 
 router.register(r'attributes', AttributeViewSet)
 router.register(r'products', ProductViewSet)
@@ -36,6 +37,7 @@ urlpatterns = [
 
     path('products/inCategory/<int:category_id>', ProductViewSet.as_view({"get": "get_products_by_category"})),
     path('products/inDepartment/<int:department_id>', ProductViewSet.as_view({"get": "get_products_by_department"})),
+    path('products/<int:product_id>/reviews/', ProductViewSet.as_view({"post": "review"})),
 
     path('customer', customer),
     path('customer/update', update_customer),

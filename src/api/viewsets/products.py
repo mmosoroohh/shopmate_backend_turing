@@ -7,21 +7,17 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.pagination import PageNumberPagination
+from api.helpers.pagination import SetUserLimitOffsetPagination
+
+
 from rest_framework.response import Response
+from rest_framework.views import status
 
 from api import errors
 from api.models import Category, Product, Review
 from api.serializers import ProductSerializer, ReviewSerializer
 
 logger = logging.getLogger(__name__)
-
-
-class ProductSetPagination(PageNumberPagination):
-    page_size = 20
-    page_query_description = 'Inform the page. Starting with 1. Default: 1'
-    page_size_query_param = 'limit'
-    page_size_query_description = 'Limit per page, Default: 20.'
-    max_page_size = 200
 
 
 class ProductViewSet(viewsets.ReadOnlyModelViewSet):
@@ -31,7 +27,7 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     """
     queryset = Product.objects.all().order_by('product_id')
     serializer_class = ProductSerializer
-    pagination_class = ProductSetPagination
+    pagination_class = SetUserLimitOffsetPagination
     filter_backends = (SearchFilter,)
     search_fields = ('name', 'description')
 
@@ -47,12 +43,16 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
         Get a list of Products by Categories
         """
         # TODO: place the code here
+        query = request.query_params.get(category_id)
+        return Response(ProductSerializer(query).data)
 
     def get_products_by_department(self, request, department_id):
         """
         Get a list of Products of Departments
         """
         # TODO: place the code here
+        query = request.query_params.get(department_id)
+        return Response(ProductSerializer(query).data)
 
     @action(methods=['GET'], detail=True, url_path='details')
     def details(self, request, pk):
@@ -60,6 +60,8 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
         Get details of a Product
         """
         # TODO: place the code here
+        query = request.query_params.get(pk)
+        return Response(ProductSerializer(query).data)
 
     @action(methods=['GET'], detail=True, url_path='locations')
     def locations(self, request, pk):
@@ -67,6 +69,10 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
         Get locations of a Product
         """
         # TODO: place the code here
+        query_list = Product.objects.all()
+        query = request.query_params.get(pk)
+        query_list = query_list.filter(location__icontains=query)
+        return query_list
 
     @action(methods=['GET'], detail=True, url_path='reviews', url_name='List reviews')
     def reviews(self, request, pk):
@@ -74,6 +80,9 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
         Return a list of reviews
         """
         # TODO: place the code here
+        query = request.query_params.get(pk)
+        return Response(ReviewSerializer(query).data)
+
 
     @swagger_auto_schema(method='POST', request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
@@ -88,3 +97,8 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
         Create a new review
         """
         # TODO: place the code here
+        data = request.data
+        context = {'request': request}
+        import pdb;pdb.set_trace()
+        queryset = Product.objects.all()
+        context['product_id'] = Product.object.get(pk=pk)
