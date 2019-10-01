@@ -37,7 +37,10 @@ urlpatterns = [
 
     path('products/inCategory/<int:category_id>', ProductViewSet.as_view({"get": "get_products_by_category"})),
     path('products/inDepartment/<int:department_id>', ProductViewSet.as_view({"get": "get_products_by_department"})),
-    path('products/<int:product_id>/reviews/', ProductViewSet.as_view({"post": "review"})),
+    path('products/<int:pk>/reviews', ProductViewSet.as_view({"post": "review"})),
+
+    path('categories/inProduct/<int:product_id>', CategoryViewSet.as_view({"get": "get_category_by_product"})),
+    path('categories/inDepartment/<int:department_id>', CategoryViewSet.as_view({"get": "get_categories_by_department"})),
 
     path('customer', customer),
     path('customer/update', update_customer),
@@ -52,5 +55,18 @@ urlpatterns = [
     path('orders/<int:order_id>', order, name="Get single order"),
     path('orders/inCustomer', orders, name="All orders"),
     path('orders/shortDetail/<int:order_id>', order_details, name="Get Order Details"),
+
+    path('shoppingcart/generateUniqueId', generate_cart_id, name="Generate cart_id"),
+    path('shoppingcart/add', add_products, name='Add product to shopping cart'),
+    path('shoppingcart/<uuid:cart_id>/', get_products, name="Get products of a cart ID"),
+    path('shoppingcart/update/<int:item_id>', update_quantity, name="Update cart item quantity"),
+    path('shoppingcart/removeProduct/<uuid:item_id>/', empty_cart, name="Delete item in shopping cart"),
+    path('shoppingcart/removeProduct/<int:item_id>', remove_product, name="Remove product from cart"),
+
+
+    path('shipping/regions/<int:shopping_region_id>', ShippingRegionViewSet.as_view({"get": "get"})),
+
+
+    path('stripe/charge', charge, name="Post payment"),
 
 ]

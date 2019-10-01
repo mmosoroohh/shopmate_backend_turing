@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from api import errors
-from api.models import Attribute, AttributeValue
+from api.models import Attribute, AttributeValue, ProductAttribute
 from api.serializers import AttributeSerializer, AttributeValueSerializer, AttributeValueExtendedSerializer
 import logging
 
@@ -22,11 +22,9 @@ class AttributeViewSet(viewsets.ReadOnlyModelViewSet):
         """
         Get Values Attribute from Attribute ID
         """
-        attribute = self.queryset.get(int=kwargs["int"])
-        serializer = AttributeValueSerializer()
-        import pdb;pdb.set_trace()
-        return Response(AttributeValueSerializer(attribute).data)
-
+        attribute = AttributeValue.objects.filter(attribute_id=kwargs['attribute_id'])
+        serializer = AttributeValueSerializer(attribute, many=True)
+        return Response(serializer.data)
 
     @action(detail=False, url_path='inProduct/<int:product_id>')
     def get_attributes_from_product(self, request, *args, **kwargs):
@@ -34,3 +32,6 @@ class AttributeViewSet(viewsets.ReadOnlyModelViewSet):
         Get all Attributes with Product ID
         """
         # TODO: place the code here
+        product_id = ProductAttribute.objects.filter(product_id=kwargs['product_id'])
+        serializer = AttributeValueExtendedSerializer(product_id, many=True)
+        return Response(serializer.data)

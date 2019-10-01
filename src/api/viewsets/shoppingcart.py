@@ -38,6 +38,12 @@ def add_products(request):
     Add a Product in the cart
     """
     # TODO: place the code here
+    logger.debug("Add Product to Shopping Cart")
+    serializer = ShoppingcartSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors)
 
 
 @api_view(['GET'])
@@ -46,6 +52,8 @@ def get_products(request, cart_id):
     Get List of Products in Shopping Cart
     """
     # TODO: place the code here
+    query = request.query_params.get(str(cart_id))
+    return Response(ShoppingcartSerializer(query).data)
 
 
 @swagger_auto_schema(method='PUT', request_body=openapi.Schema(
@@ -61,6 +69,13 @@ def update_quantity(request, item_id):
     """
     logger.debug("Updating quantity")
     # TODO: place the code here
+    item = request.data.get(item_id)
+    serializer = ShoppingcartSerializer(
+        item, data=request.data, partial=True
+    )
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response(serializer.data)
 
 
 @api_view(['DELETE'])
@@ -69,6 +84,9 @@ def empty_cart(request, cart_id):
     Empty cart
     """
     # TODO: place the code here
+    cart = ShoppingCart.objects.get(cart_id=cart_id)
+    cart.delete()
+    return Response({'message': 'Shopping cart with id `{}` has been delete'.format(cart_id)})
 
 
 @api_view(['DELETE'])
@@ -77,6 +95,10 @@ def remove_product(request, item_id):
     Remove a product in the cart
     """
     # TODO: place the code here
+    cart = ShoppingCart.objects.get(item_id=item_id)
+    cart.delete()
+    return Response({'message': 'Shopping cart with id `{}` has been delete'.format(item_id)})
+
 
 
 @api_view(['GET'])
@@ -85,6 +107,9 @@ def move_to_cart(request, item_id):
     Move a product to cart
     """
     # TODO: place the code here
+    query = request.query_params.get(item_id=item_id)
+    return Response(ShoppingcartSerializer(query).data)
+
 
 
 @api_view(['GET'])
@@ -101,6 +126,7 @@ def save_for_later(request, item_id):
     Save a Product for latter
     """
     # TODO: place the code here
+
 
 
 @api_view(['GET'])

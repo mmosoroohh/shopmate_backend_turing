@@ -1,7 +1,11 @@
+import stripe
+import json
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.conf import settings
+from django.shortcuts import render
 
 from api import payments, errors
 from api.payments import PaymentError
@@ -33,6 +37,20 @@ def charge(request):
     This method receive a front-end payment and create a charge.
     """
     # TODO: place the code here
+    token = request.data["stripeToken"]
+    chargeAmount = request.data['amount']
+    chargeCurrency = request.data['currency']
+    description = request.data['description']
+
+    charge = stripe.Charge.create(
+        amount=chargeAmount,
+        currency=chargeCurrency,
+        description=description,
+        source=token,
+        api_key=settings.STRIPE_API_KEY
+    )
+    return Response(charge.data)
+
 
 
 @api_view(['POST'])

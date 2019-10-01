@@ -4,7 +4,6 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from api.models import Department, Category, Attribute, AttributeValue, Product, Customer, Shipping, Tax, ShoppingCart, \
     Orders, OrderDetail, ShippingRegion, Review
-from api.helpers.serializer_fields import SerializeField, SerializeManyToManyField
 
 
 class UserSerializer(serializers.ModelSerializer):

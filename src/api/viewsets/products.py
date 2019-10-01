@@ -98,6 +98,10 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
         """
         # TODO: place the code here
         data = request.data
-        context = {'request': request}
-        queryset = Product.objects.all()
-        context['product_id'] = Product.object.get(pk=pk)
+        product_id = Review.objects.get(pk=pk)
+        serializer = ReviewSerializer(
+            product_id, data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

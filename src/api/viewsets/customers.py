@@ -66,7 +66,6 @@ def create_customer(request):
     Register a customer.
     """
     logger.debug("Creating a customer")
-    customer = Customer.objects.create()
     serializer = CreateCustomerSerializer(customer, data=request.data)
     if serializer.is_valid():
         serializer.save()

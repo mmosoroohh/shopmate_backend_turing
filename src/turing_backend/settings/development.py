@@ -2,8 +2,9 @@ from .base import *
 import os
 
 DEBUG = True
+TESTING = False
 
-STRIPE_API_KEY = "sk_test_lomdOfxbm7QDgZWvR82UhV6D"
+STRIPE_API_KEY = "sk_test_R8c2wrOPgJbwK8C0nw3E8ULg00TWOB23H2"
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
